@@ -9,7 +9,25 @@ import ckan.lib.helpers as h
 import ckan.plugins as p
 import gasnippet
 
+from ckan.plugins.interfaces import Interface
+
 log = logging.getLogger('ckanext.googleanalytics')
+
+
+class IGenshiStreamFilter(Interface):
+    '''
+    Hook into template rendering.
+    See ckan.lib.base.py:render
+    '''
+
+    def filter(self, stream):
+        """
+        Return a filtered Genshi stream.
+        Called when any page is rendered.
+        :param stream: Genshi stream of the current output document
+        :returns: filtered Genshi stream
+        """
+        return stream
 
 
 class GoogleAnalyticsException(Exception):
@@ -18,7 +36,7 @@ class GoogleAnalyticsException(Exception):
 
 class GoogleAnalyticsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurable, inherit=True)
-    p.implements(p.IGenshiStreamFilter, inherit=True)
+    p.implements(IGenshiStreamFilter, inherit=True)
     p.implements(p.IRoutes, inherit=True)
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.ITemplateHelpers)
